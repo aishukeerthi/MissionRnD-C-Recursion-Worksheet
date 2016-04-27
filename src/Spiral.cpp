@@ -33,56 +33,43 @@ Note : Check the function Parameters ,Its a double pointer .
 
 #include "stdafx.h"
 #include<stdlib.h>
-void spiral_helper(int rows, int columns, int **input_array, int *output, int start_pos)
-{
-	static int output_pos = 0;
-	if (rows <= 0 || columns <= 0)
-		return;
-
-	//Go right
-	int i = start_pos, j;
-	for (j = 0; j<columns; j++)
-	{
-		output[output_pos++] = input_array[i][j + start_pos];
-		//printf("%d\n", output[output_pos - 1]);
-	}
-	j--;	//going back one row
-	//printf("value of i:%d, j:%d\n", i, j);
-	//Go down
-	for (i = 1; i<rows; i++)
-	{
-		output[output_pos++] = input_array[i + start_pos][j + start_pos];
-		//printf("%d\n", output[output_pos - 1]);
-	}
-	i--;	//going back one row
-	//printf("value of i:%d, j:%d\n", i, j);
-
-	//Go Left
-	for (j = j - 1; j >= 0; j--)
-	{
-		output[output_pos++] = input_array[i + start_pos][j + start_pos];
-		//printf("%d\n", output[output_pos - 1]);
-	}
-	j++;
-	//printf("value of i:%d, j:%d\n", i, j);
-
-	//Go Up and dont print the first element
-	for (i = i - 1; i>0; i--)
-	{
-		output[output_pos++] = input_array[i + start_pos][j + start_pos];
-		//printf("%d\n", output[output_pos - 1]);
-	}
-//	printf("value of i:%d, j:%d\n", i, j);
-
-	spiral_helper(rows - 2, columns - 2, input_array, output, start_pos + 1);
-}
-
 int *spiral(int rows, int columns, int **input_array)
 {
-	if (rows <= 0 || columns <= 0 || !input_array)
+	if (input_array == NULL || rows <= 0 || columns <= 0)
 		return NULL;
-	int *output = (int *)malloc(sizeof(int)*rows*columns);
-	spiral_helper(rows, columns, input_array, output, 0);
-	return output;
-}
 
+	int n = rows*columns;
+	int *res = (int *)malloc(n*sizeof(int));
+	int i, k = 0, r1 = 0, r2 = rows, c1 = 0, c2 = columns;
+
+	while (r1 < r2 && c1 < c2)
+	{
+		for (i = c1; i < c2; i++)
+		{
+			res[k++] = input_array[r1][i];
+		}
+		r1++;
+		for (i = r1; i < r2; i++)
+		{
+			res[k++] = input_array[i][c2 - 1];
+		}
+		c2--;
+		if (r1 < r2)
+		{
+			for (i = c2 - 1; i >= c1; i--)
+			{
+				res[k++] = input_array[r2 - 1][i];
+			}
+			r2--;
+		}
+		if (c1 < c2)
+		{
+			for (i = r2 - 1; i >= r1; i--)
+			{
+				res[k++] = input_array[i][c1];
+			}
+			c1++;
+		}
+	}
+	return res;
+}
